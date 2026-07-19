@@ -1,0 +1,6 @@
+export const env = {
+  apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000/api',
+  supabaseUrl: import.meta.env.VITE_SUPABASE_URL,
+  supabaseKey: import.meta.env.VITE_SUPABASE_KEY,
+}
+
