@@ -2,10 +2,13 @@ import {
   FaEnvelope,
   FaHome,
   FaInfoCircle,
+  FaSignOutAlt,
   FaShoppingBag,
   FaStore,
+  FaUser,
 } from 'react-icons/fa'
 import { NavLink } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 import { useCart } from '../../hooks/useCart'
 
 const navigationItems = [
@@ -17,6 +20,18 @@ const navigationItems = [
 
 export const Navbar = () => {
   const { cartItems } = useCart()
+  const { user, openLoginModal, signOut } = useAuth()
+
+  const handleAuthClick = () => {
+    if (user) {
+      void signOut().catch((error: unknown) => {
+        console.error('Unable to sign out.', error)
+      })
+      return
+    }
+
+    openLoginModal()
+  }
 
   return (
     <header className="site-header">
@@ -48,13 +63,22 @@ export const Navbar = () => {
           ))}
         </div>
 
-        <NavLink to="/cart" className="cart-button" aria-label={`Cart with ${cartItems.length} items`}>
-          <FaShoppingBag />
-          <span>Cart</span>
-          {cartItems.length > 0 && <b>{cartItems.length}</b>}
-        </NavLink>
+        <div className="nav-actions">
+          <button
+            className={`auth-nav-button ${user ? 'signed-in' : ''}`}
+            onClick={handleAuthClick}
+            title={user ? `Signed in as ${user.email ?? 'customer'}` : 'Sign in'}
+          >
+            {user ? <FaSignOutAlt /> : <FaUser />}
+            <span>{user ? 'Sign out' : 'Sign in'}</span>
+          </button>
+          <NavLink to="/cart" className="cart-button" aria-label={`Cart with ${cartItems.length} items`}>
+            <FaShoppingBag />
+            <span>Cart</span>
+            {cartItems.length > 0 && <b>{cartItems.length}</b>}
+          </NavLink>
+        </div>
       </nav>
     </header>
   )
 }
-

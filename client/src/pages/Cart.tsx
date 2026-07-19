@@ -4,7 +4,7 @@ import { ProductImage } from '../components/common/ProductImage'
 import { useCart } from '../hooks/useCart'
 
 const CartPage = () => {
-  const { cartItems, removeFromCart } = useCart()
+  const { cartItems, isCartLoading, cartError, removeFromCart } = useCart()
   const subtotal = cartItems.reduce((total, item) => total + item.price, 0)
   const delivery = subtotal >= 999 || subtotal === 0 ? 0 : 99
   const total = subtotal + delivery
@@ -17,7 +17,15 @@ const CartPage = () => {
         <p>{cartItems.length === 0 ? 'Your cart is ready for something great.' : `${cartItems.length} ${cartItems.length === 1 ? 'item' : 'items'} saved for checkout.`}</p>
       </section>
 
-      {cartItems.length === 0 ? (
+      {cartError && <p className="cart-alert" role="alert">{cartError}</p>}
+
+      {isCartLoading ? (
+        <section className="cart-loading" aria-live="polite">
+          <span />
+          <h2>Loading your saved cart…</h2>
+          <p>We&apos;re syncing your latest picks securely.</p>
+        </section>
+      ) : cartItems.length === 0 ? (
         <section className="empty-cart">
           <div className="empty-cart-visual">
             <img src="/images/generated/empty-cart.png" alt="Shopping bag with clothing, jewellery and electronics" />
@@ -44,7 +52,7 @@ const CartPage = () => {
                     <p>In stock · Ready to dispatch</p>
                     <strong className="cart-item-price">{`\u20B9${item.price.toFixed(2)}`}</strong>
                   </div>
-                  <button className="remove-btn" onClick={() => removeFromCart(item.id)} aria-label={`Remove ${item.title}`}><FaTrash /> Remove</button>
+                  <button className="remove-btn" onClick={() => void removeFromCart(item.id)} aria-label={`Remove ${item.title}`}><FaTrash /> Remove</button>
                 </article>
               ))}
             </div>

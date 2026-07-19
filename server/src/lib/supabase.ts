@@ -8,3 +8,13 @@ export const supabase = createClient(env.supabaseUrl, env.supabaseKey, {
   },
 })
 
+export const createAuthenticatedSupabaseClient = (accessToken: string) =>
+  createClient(env.supabaseUrl, env.supabaseKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+    global: {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  })

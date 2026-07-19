@@ -18,7 +18,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   const handleAddToCart = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
-    if (!productIsInCart) addToCart(product)
+    if (!productIsInCart) void addToCart(product)
   }
 
   const handleToggleWishlist = (event: MouseEvent<HTMLButtonElement>) => {
