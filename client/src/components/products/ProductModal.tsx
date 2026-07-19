@@ -19,7 +19,7 @@ export const ProductModal = ({ isOpen, product, onClose }: ProductModalProps) =>
 
   const handleAddToCart = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
-    if (!productIsInCart) addToCart(product)
+    if (!productIsInCart) void addToCart(product)
   }
 
   return (

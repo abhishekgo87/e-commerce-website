@@ -73,6 +73,25 @@ npm run build
 
 The API defaults to `http://localhost:3000`, with health information available at `GET /api/health`.
 
+## Authentication and persistent cart
+
+Supabase Auth manages email/password sessions. The browser sends the session access token to Express, and the API verifies it before reading or changing the authenticated user's cart. Cart database access is protected by row-level security policies in `server/supabase/migrations/0001_create_cart_items.sql`.
+
+Apply migrations after authenticating and linking the Supabase CLI:
+
+```bash
+cd server
+npx supabase login
+npx supabase link --project-ref YOUR_PROJECT_REF
+npm run db:push
+```
+
+Cart endpoints require `Authorization: Bearer <access-token>`:
+
+- `GET /api/cart`
+- `POST /api/cart` with `{ "productId": 1, "quantity": 1 }`
+- `DELETE /api/cart/:productId`
+
 ## Conventions
 
 - Pages only compose route-level UI.
