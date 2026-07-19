@@ -1,0 +1,16 @@
+import type { ErrorRequestHandler } from 'express'
+
+export const errorHandler: ErrorRequestHandler = (
+  error: unknown,
+  _request,
+  response,
+  _next,
+) => {
+  const message = error instanceof Error ? error.message : 'Internal server error'
+
+  response.status(500).json({
+    status: 'error',
+    message,
+  })
+}
+
