@@ -1485,11 +1485,37 @@ img {
 
 .auth-form input {
   width: 100%;
+  min-width: 0;
   border: 0;
   outline: 0;
   color: var(--ink);
   background: transparent;
   font-size: 0.82rem;
+}
+
+.auth-password-toggle {
+  display: grid;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  color: #7c8799;
+  background: transparent;
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease;
+}
+
+.auth-password-toggle:hover {
+  color: var(--navy);
+  background: #f2f4f7;
+}
+
+.auth-password-toggle:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
 }
 
 .auth-message {

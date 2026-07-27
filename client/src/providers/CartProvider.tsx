@@ -28,7 +28,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     setIsCartLoading(true)
     setCartError(null)
 
-    void getCart(session.access_token)
+    void getCart()
       .then(({ items }) => {
         if (!isCurrentRequest) return
 
@@ -64,7 +64,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     setCartItems((currentItems) => [...currentItems, product])
 
     try {
-      await addCartItemRequest(session.access_token, product.id)
+      await addCartItemRequest(product.id)
     } catch (error) {
       setCartItems((currentItems) => currentItems.filter((item) => item.id !== product.id))
       setCartError(error instanceof Error ? error.message : 'Unable to add this item.')
@@ -82,7 +82,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     setCartItems((currentItems) => currentItems.filter((item) => item.id !== productId))
 
     try {
-      await removeCartItemRequest(session.access_token, productId)
+      await removeCartItemRequest(productId)
     } catch (error) {
       setCartItems(previousItems)
       setCartError(error instanceof Error ? error.message : 'Unable to remove this item.')

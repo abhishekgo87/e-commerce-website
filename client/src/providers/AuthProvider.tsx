@@ -44,7 +44,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, [])
 
   const signUp = useCallback(async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({ email, password })
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { cartProductIds: [] },
+      },
+    })
     if (error) throw new Error(error.message)
 
     if (data.session) setIsLoginModalOpen(false)

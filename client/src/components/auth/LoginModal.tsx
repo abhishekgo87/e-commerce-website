@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { FormEvent, MouseEvent } from 'react'
 import {
   FaArrowLeft,
   FaCheckCircle,
   FaEnvelope,
+  FaEye,
+  FaEyeSlash,
   FaLock,
   FaPaperPlane,
   FaShoppingBag,
@@ -24,26 +26,33 @@ export const LoginModal = () => {
   const [mode, setMode] = useState<AuthMode>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null)
 
+  const handleClose = useCallback(() => {
+    setIsPasswordVisible(false)
+    closeLoginModal()
+  }, [closeLoginModal])
+
   useEffect(() => {
     if (!isLoginModalOpen) return
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closeLoginModal()
+      if (event.key === 'Escape') handleClose()
     }
 
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [closeLoginModal, isLoginModalOpen])
+  }, [handleClose, isLoginModalOpen])
 
   if (!isLoginModalOpen) return null
 
   const changeMode = (nextMode: AuthMode) => {
     setMode(nextMode)
+    setIsPasswordVisible(false)
     setErrorMessage(null)
     setSuccessMessage(null)
     setConfirmationEmail(null)
@@ -108,7 +117,7 @@ export const LoginModal = () => {
   const stopPropagation = (event: MouseEvent<HTMLDivElement>) => event.stopPropagation()
 
   return (
-    <div className="auth-modal" onClick={closeLoginModal} role="presentation">
+    <div className="auth-modal" onClick={handleClose} role="presentation">
       <div
         className="auth-modal-card"
         onClick={stopPropagation}
@@ -116,7 +125,7 @@ export const LoginModal = () => {
         aria-modal="true"
         aria-labelledby="auth-modal-title"
       >
-        <button className="auth-modal-close" onClick={closeLoginModal} aria-label="Close sign in dialog">
+        <button className="auth-modal-close" onClick={handleClose} aria-label="Close sign in dialog">
           <FaTimes />
         </button>
 
@@ -167,7 +176,27 @@ export const LoginModal = () => {
               </label>
               <label>
                 <span>Password</span>
-                <div><FaLock /><input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} placeholder="Minimum 6 characters" minLength={6} required /></div>
+                <div>
+                  <FaLock />
+                  <input
+                    type={isPasswordVisible ? 'text' : 'password'}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                    placeholder="Minimum 6 characters"
+                    minLength={6}
+                    required
+                  />
+                  <button
+                    className="auth-password-toggle"
+                    type="button"
+                    onClick={() => setIsPasswordVisible((isVisible) => !isVisible)}
+                    aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
+                    aria-pressed={isPasswordVisible}
+                  >
+                    {isPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
               </label>
 
               {errorMessage && <p className="auth-message error" role="alert">{errorMessage}</p>}

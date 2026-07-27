@@ -16,23 +16,28 @@ alter table public.cart_items enable row level security;
 drop policy if exists "Users can read their own cart" on public.cart_items;
 create policy "Users can read their own cart"
   on public.cart_items for select to authenticated
-  using ((select auth.uid()) = user_id);
+  using (auth.uid() = user_id);
 
 drop policy if exists "Users can add to their own cart" on public.cart_items;
 create policy "Users can add to their own cart"
   on public.cart_items for insert to authenticated
-  with check ((select auth.uid()) = user_id);
+  with check (auth.uid() = user_id);
 
 drop policy if exists "Users can update their own cart" on public.cart_items;
 create policy "Users can update their own cart"
   on public.cart_items for update to authenticated
-  using ((select auth.uid()) = user_id)
-  with check ((select auth.uid()) = user_id);
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 
 drop policy if exists "Users can remove from their own cart" on public.cart_items;
 create policy "Users can remove from their own cart"
   on public.cart_items for delete to authenticated
-  using ((select auth.uid()) = user_id);
+  using (auth.uid() = user_id);
+
+-- Ensure permissions are granted correctly
+GRANT ALL ON public.cart_items TO authenticated;
+GRANT ALL ON public.cart_items TO anon;
+GRANT ALL ON public.cart_items TO service_role;
 
 create or replace function public.set_cart_items_updated_at()
 returns trigger

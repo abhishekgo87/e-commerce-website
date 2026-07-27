@@ -71,7 +71,7 @@ Create production builds for both packages:
 npm run build
 ```
 
-The API defaults to `http://localhost:3000`, with health information available at `GET /api/health`.
+The API defaults to `http://localhost:3001`, with health information available at `GET /api/health`.
 
 ## Authentication and persistent cart
 
